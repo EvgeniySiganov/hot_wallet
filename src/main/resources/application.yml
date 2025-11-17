@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: hot_wallet
+  datasource:
+    url: jdbc:postgresql://localhost:15432/hot-wallet
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+  liquibase:
+    default-schema: public
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true

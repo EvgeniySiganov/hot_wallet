@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15432/hot-wallet
+    username: admin
+    password: admin
+  jpa:
+    properties:
+      hibernate.connection.isolation: 2
+hot-wallet:
+  batch:
+    deposit-delay-ms: 100
+    withdrawal-delay-ms: 1000

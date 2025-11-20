@@ -1,6 +1,8 @@
 package ru.siganov.hot_wallet.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,11 @@ public class BatchWalletService implements WalletService {
     }
 
     @Override
+    public ResponseEntity<String> getBalance(UUID uuid) {
+        return ResponseEntity.ok().body(repository.getBalance(uuid).toPlainString());
+    }
+
+    @Override
     public CompletableFuture<String> addDepositOperation(WalletOperationRequest request) {
         WalletOperationHolder holder = new WalletOperationHolder(request);
         depositQueue.add(holder);
@@ -50,7 +57,7 @@ public class BatchWalletService implements WalletService {
     }
 
 
-    @Scheduled(fixedDelay = 100)
+    @Scheduled(fixedDelayString = "${hot-wallet.batch.deposit-delay-ms:100}")
     public void processDepositBatch() {
         log.debug("Processing deposit batch");
         List<WalletOperationHolder> batch = new ArrayList<>();
@@ -77,7 +84,7 @@ public class BatchWalletService implements WalletService {
 
     }
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelayString = "${hot-wallet.batch.withdrawal-delay-ms:1000}")
     public void processWithdrawBatch() {
         List<WalletOperationHolder> batch = new ArrayList<>();
         withdrawQueue.drainTo(batch);

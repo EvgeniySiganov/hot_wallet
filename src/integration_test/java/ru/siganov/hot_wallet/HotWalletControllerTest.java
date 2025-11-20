@@ -10,7 +10,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
 @Testcontainers
-class HotWalletApplicationTests {
+public class HotWalletControllerTest {
 
     @Container
     static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>("postgres:15")
@@ -28,5 +28,4 @@ class HotWalletApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

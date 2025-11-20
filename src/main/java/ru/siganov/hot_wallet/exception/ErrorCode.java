@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
     UNKNOWN_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
-    INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST);
+    INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST),
+    NONE_EXIST_WALLET(HttpStatus.BAD_REQUEST);
 
 
     private final HttpStatus httpStatus;

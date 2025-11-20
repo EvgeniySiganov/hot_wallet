@@ -1,8 +1,10 @@
 package ru.siganov.hot_wallet.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.siganov.hot_wallet.exception.InsufficientBalanceException;
+import ru.siganov.hot_wallet.exception.NonExistentWalletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -57,5 +59,15 @@ public class WalletRepositoryCustom {
     }
 
 
-
+    public BigDecimal getBalance(UUID uuid) {
+        String query = """
+                SELECT balance FROM wallet
+                WHERE guid = ?::uuid
+                """;
+        BigDecimal bigDecimal = jdbcTemplate.queryForObject(query, BigDecimal.class, uuid);
+        if (bigDecimal == null) {
+            throw new NonExistentWalletException(uuid);
+        }
+        return bigDecimal;
+    }
 }

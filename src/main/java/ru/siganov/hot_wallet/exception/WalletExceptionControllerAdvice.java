@@ -15,7 +15,8 @@ public class WalletExceptionControllerAdvice {
 
     private static final Map<Class<? extends RuntimeException>, ErrorCode> ERROR_MAP = Map.of(
             WalletBatchUpdateException.class, ErrorCode.DB_ERROR,
-            InsufficientBalanceException.class, ErrorCode.INSUFFICIENT_BALANCE
+            InsufficientBalanceException.class, ErrorCode.INSUFFICIENT_BALANCE,
+            NonExistentWalletException.class, ErrorCode.NONE_EXIST_WALLET
     );
 
     @ExceptionHandler(Exception.class)

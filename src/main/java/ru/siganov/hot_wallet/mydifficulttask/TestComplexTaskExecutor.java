@@ -1,0 +1,30 @@
+package ru.siganov.hot_wallet.mydifficulttask;
+
+public class TestComplexTaskExecutor {
+    public static void main(String[] args) {
+        ComplexTaskExecutor taskExecutor = new ComplexTaskExecutor(10);
+
+        Runnable testRunnable = () -> {
+            System.out.println(Thread.currentThread().getName() + " started the test.");
+
+            taskExecutor.executeTasks(5);
+
+            System.out.println(Thread.currentThread().getName() + " completed the test.");
+        };
+
+        Thread thread1 = new Thread(testRunnable, "TestThread-1");
+        Thread thread2 = new Thread(testRunnable, "TestThread-2");
+
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+            taskExecutor.shutdown();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            taskExecutor.shutdown();
+        }
+    }
+}

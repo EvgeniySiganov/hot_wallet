@@ -17,24 +17,33 @@ public class ConcurrentBank {
 
     }
 
-    @Transactional
     public void transfer(BankAccount from, BankAccount to, int amount) {
         if (from == null || to == null || from == to) {
             throw new IllegalArgumentException("Wrong bank account");
         }
-        BigDecimal balAcc1 = from.getBalance().subtract(BigDecimal.valueOf(amount));
-        if (balAcc1.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Not enough balance");
-        } else {
-            BigDecimal withdraw = from.withdraw(amount);
-            if (withdraw.compareTo(BigDecimal.ZERO) < 0) {
-                throw new IllegalArgumentException("Negative balance");
+
+        int hashBankAccountFrom = System.identityHashCode(from);
+        int hashBankAccountTo = System.identityHashCode(to);
+
+        BankAccount first = hashBankAccountFrom < hashBankAccountTo ? from : to;
+        BankAccount second = hashBankAccountFrom < hashBankAccountTo ? to : from;
+        first.lock();
+        second.lock();
+
+        try {
+            BigDecimal balAcc1 = from.getBalance().subtract(BigDecimal.valueOf(amount));
+            if (balAcc1.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("Not enough balance");
             } else {
+                boolean withdraw = from.withdraw(amount);
                 boolean deposit = to.deposit(amount);
-                if (!deposit) {
-                    throw new IllegalArgumentException("Deposit failed");
+                if (!deposit || !withdraw) {
+                    throw new IllegalArgumentException("Transaction failed");
                 }
             }
+        } finally {
+            first.unlock();
+            second.unlock();
         }
     }
 
